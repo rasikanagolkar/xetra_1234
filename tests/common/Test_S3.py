@@ -86,7 +86,14 @@ class TestS3BucketConnectorMethods(unittest.TestCase):
         """
         Tests the list_files_in_prefi method in case of a wrong or not existing prefix
         """
-        pass
+        prefix_exp = 'no-prefix/'
+        
+        # Method execution
+        list_result = self.s3_bucket_conn.list_files_in_prefix(prefix_exp)
+        # Tests after method execution
+        self.assertTrue(not list_result)
+        
+        
 
 
 if __name__ =="__main__":
