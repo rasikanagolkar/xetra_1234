@@ -173,5 +173,57 @@ class TestXetraETLMethods(unittest.TestCase):
         # Test after method execution
         self.assertTrue(df_exp.equals(df_result))
 
+
+    def test_transform_report1_emptydf(self):
+        """Tests the transform report1 method with an empty dataframe argument"""
+
+        # Expetced results
+        log_exp = 'Dataframe is empty.No transformations will be applied'
+
+        # Test init
+        extract_date = '2021-04-17'
+        extract_date_list = ['2021-04-16','2021-04-17','2021-04-18']
+        df_input = pd.DataFrame()
+
+        #method execution
+        with patch.object(MetaProcess, "return_date_list",
+        return_value=[extract_date, extract_date_list]):
+            xetra_etl = XetraETL(self.s3_bucket_src, self.s3_bucket_trg,
+                         self.meta_key, self.source_config, self.target_config)
+            with self.assertLogs() as logm:
+                df_result = xetra_etl.transform_report1(df_input)
+                # Log test after method execution
+                self.assertIn(log_exp, logm.output[0])
+        # Test after method execution
+        self.assertTrue(df_result.empty)
+
+
+    def test_transform_report1_ok(self):
+        """
+        Tests the transform_report1 method with
+        an DataFrame as input argument
+        """
+        # Expected results
+        log1_exp = 'Application of tranformations for Xetra source data for Report 1 started ...'
+        log2_exp = 'Applying transformations to Xetra source data finished...'
+        df_exp = self.df_report
+        # Test init
+        extract_date = '2021-04-17'
+        extract_date_list = ['2021-04-16', '2021-04-17', '2021-04-18', '2021-04-19']
+        df_input = self.df_src.loc[1:8].reset_index(drop=True)
+        # Method execution
+        with patch.object(MetaProcess, "return_date_list",
+        return_value=[extract_date, extract_date_list]):
+            xetra_etl = XetraETL(self.s3_bucket_src, self.s3_bucket_trg,
+                         self.meta_key, self.source_config, self.target_config)
+            with self.assertLogs() as logm:
+                df_result = xetra_etl.transform_report1(df_input)
+                # Log test after method execution
+                self.assertIn(log1_exp, logm.output[0])
+                self.assertIn(log2_exp, logm.output[1])
+        # Test after method execution
+        self.assertTrue(df_exp.equals(df_result))
+
+
 if __name__ =="__main__":
     unittest.main()
