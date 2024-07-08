@@ -1,6 +1,6 @@
 """Xetra ETL Component"""
 import pandas as pd
-
+from datetime import datetime
 import logging
 from typing import NamedTuple
 from xetra.common.s3 import S3BucketConnector
@@ -151,9 +151,28 @@ class XetraETL():
         data_frame = data_frame[data_frame.Date >= self.extract_date].reset_index(drop=True)
         self._logger.info('Applying transformations to Xetra source data finished...')
         return data_frame
+    
 
-    def load(self):
-        pass
+
+    def load(self, data_frame: pd.DataFrame):
+        """
+        Saves a Pandas DataFrame to the target
+
+        :param data_frame: Pandas DataFrame as Input
+        """
+        # Creating target key
+        target_key = (
+            f'{self.trg_args.trg_key}'
+            f'{datetime.today().strftime(self.trg_args.trg_key_date_format)}.'
+            f'{self.trg_args.trg_format}'
+        )
+        # Writing to target
+        self.s3_bucket_trg.write_df_to_s3(data_frame, target_key, self.trg_args.trg_format)
+        self._logger.info('Xetra target data successfully written.')
+        # Updating meta file
+        MetaProcess.update_meta_file(self.meta_update_list, self.meta_key, self.s3_bucket_trg)
+        self._logger.info('Xetra meta file successfully updated.')
+        return True
 
     def etl_report1(self):
         """
@@ -164,7 +183,7 @@ class XetraETL():
         # Transformation
         data_frame = self.transform_report1(data_frame)
         # Load
-        #self.load(data_frame)
+        self.load(data_frame)
         return True
 
 

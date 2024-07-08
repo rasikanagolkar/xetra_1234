@@ -10,6 +10,7 @@ pyarrow = "*"
 pyyaml = "*"
 moto = "*"
 coverage = "*"
+awscli = "*"
 
 [dev-packages]
 awscli = "*"
