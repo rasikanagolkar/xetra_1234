@@ -17,12 +17,27 @@ The source file contains data as below:
 <img width="583" alt="image" src="https://github.com/user-attachments/assets/edb2a67f-0221-4739-b411-285a60576d04">
 
 What are topics explored by me in the project?
+
 design principles, clean coding, virtual environments, project/folder setup, configuration, logging, exeption handling, linting, dependency management, unit testing
 integration testing
 
 What are the tools used in the project?
+
 Python 3.9,Github,Visual Studio Code,Docker,Python packages Pandas,boto3,pyyaml,awscli,pylint,moto,coverage
 memory-profiler.
+
+How to setup the project?
+1. Create a source S3 bucket and update the 'src_bucket' tag in the xetra_report1_config.yml file.
+2. Create a target S3 bucket and update the 'src_bucket' tag in the xetra_report1_config.yml file.
+3. Create an AWS user with permissions to read/write from/to S3 bucket.
+4. Add the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY of the user created in the earlier step as environment variables.
+5. Create a python virtual environment using:- 'pipenv shell –python <add path of the python exe>'
+6. Activate the virtual environment using:- 'pipenv shell'
+7. Install all the packages using the pipfile:- pipenv install
+
+
+
+
 
 
 
